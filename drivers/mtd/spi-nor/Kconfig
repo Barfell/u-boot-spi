@@ -35,4 +35,9 @@ config SPI_NOR_MISC
 	  Add SPI-NOR support for various flash chips like Atmel, EON,
 	  GigaDevice, and ISSI.
 
+config SPI_NOR_MACRONIX
+	bool "Macronix SPI NOR flash support"
+	help
+	  Add support for various Macronix SPI flash chips (MX25Lxxx)
+
 endif # MTD_SPI_NOR
