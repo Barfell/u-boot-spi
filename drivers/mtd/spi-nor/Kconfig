@@ -50,4 +50,9 @@ config SPI_NOR_STMICRO
 	help
 	  Add support for various STMicro SPI flash chips (M25Pxxx and N25Qxxx)
 
+config SPI_NOR_SST
+	bool "SST SPI NOR flash support"
+	help
+	  Add support for various SST SPI flash chips (SST25xxx)
+
 endif # MTD_SPI_NOR
