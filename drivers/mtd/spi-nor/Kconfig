@@ -46,6 +46,15 @@ config MTD_SPI_NOR_USE_4K_SECTORS
 	  Please note that some tools/drivers/filesystems may not work with
 	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
 
+config MTD_ZYNQ_QSPI
+	bool "Zynq QSPI NOR controller driver"
+	depends on ARCH_ZYNQ
+	help
+	  Enable the Zynq Quad-SPI (QSPI) driver. This driver can be
+	  used to access the SPI NOR flash on platforms embedding this
+	  Zynq QSPI IP core. This IP is used to connect the flash in
+	  4-bit qspi, 8-bit dual stacked and shared 4-bit dual parallel.
+
 config SPI_NOR_MISC
 	bool "Miscellaneous SPI NOR flash's support"
 	help
