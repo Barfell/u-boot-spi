@@ -29,4 +29,10 @@ config MTD_SPI_NOR_USE_4K_SECTORS
 	  Please note that some tools/drivers/filesystems may not work with
 	  4096 B erase size (e.g. UBIFS requires 15 KiB as a minimum).
 
+config SPI_NOR_MISC
+	bool "Miscellaneous SPI NOR flash's support"
+	help
+	  Add SPI-NOR support for various flash chips like Atmel, EON,
+	  GigaDevice, and ISSI.
+
 endif # MTD_SPI_NOR
