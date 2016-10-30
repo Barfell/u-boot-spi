@@ -1,0 +1,14 @@
+menuconfig MTD_SPI_NOR
+	tristate "SPI-NOR device support"
+	depends on MTD
+	help
+	  This is the core SPI NOR framework which can be used to interact SPI-NOR
+	  to SPI driver interface layer and the SPI-NOR controller driver.
+
+	  Unlike normal/generic spi controllers, they are few controllers which are
+	  exclusively used to connect SPI-NOR devices, called SPI-NOR controllers.
+	  So technically these controllers shouldn't reside at drivers/spi as these
+	  may effect the generic SPI bus functionalities, so this SPI-NOR core acts
+	  as a common core framework between the generic SPI controller drivers vs
+	  SPI-NOR controller drivers for SPI-NOR device access. Note that from SPI-NOR
+	  core to SPI drivers there should be an interface layer.
