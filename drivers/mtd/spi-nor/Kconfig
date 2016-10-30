@@ -40,4 +40,9 @@ config SPI_NOR_MACRONIX
 	help
 	  Add support for various Macronix SPI flash chips (MX25Lxxx)
 
+config SPI_NOR_SPANSION
+	bool "Spansion SPI NOR flash support"
+	help
+	  Add support for various Spansion SPI flash chips (S25FLxxx)
+
 endif # MTD_SPI_NOR
