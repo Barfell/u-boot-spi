@@ -88,7 +88,6 @@
 #define CONFIG_HAS_DATAFLASH
 #define CONFIG_SYS_MAX_DATAFLASH_BANKS		2
 #define CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS0	0xC0000000	/* CS0 */
-#define CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS3	0xD0000000	/* CS3 */
 #define AT91_SPI_CLK				15000000
 #define DATAFLASH_TCSS				(0x1a << 16)
 #define DATAFLASH_TCHS				(0x1 << 24)
@@ -145,20 +144,6 @@
 #define CONFIG_ENV_ADDR		(CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS0 + CONFIG_ENV_OFFSET)
 #define CONFIG_ENV_SIZE		0x4200
 #define CONFIG_BOOTCOMMAND	"cp.b 0xC0084000 0x22000000 0x210000; bootm"
-#define CONFIG_BOOTARGS		"console=ttyS0,115200 "			\
-				"root=/dev/mtdblock0 "			\
-				"mtdparts=atmel_nand:-(root) "		\
-				"rw rootfstype=jffs2"
-
-#elif CONFIG_SYS_USE_DATAFLASH_CS3
-
-/* bootstrap + u-boot + env + linux in dataflash on CS3 */
-#define CONFIG_ENV_IS_IN_DATAFLASH
-#define CONFIG_SYS_MONITOR_BASE	(CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS3 + 0x8400)
-#define CONFIG_ENV_OFFSET	0x4200
-#define CONFIG_ENV_ADDR		(CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS3 + CONFIG_ENV_OFFSET)
-#define CONFIG_ENV_SIZE		0x4200
-#define CONFIG_BOOTCOMMAND	"cp.b 0xD0084000 0x22000000 0x210000; bootm"
 #define CONFIG_BOOTARGS		"console=ttyS0,115200 "			\
 				"root=/dev/mtdblock0 "			\
 				"mtdparts=atmel_nand:-(root) "		\

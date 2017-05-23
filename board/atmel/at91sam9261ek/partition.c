@@ -13,7 +13,6 @@ AT91S_DATAFLASH_INFO dataflash_info[CONFIG_SYS_MAX_DATAFLASH_BANKS];
 
 struct dataflash_addr cs[CONFIG_SYS_MAX_DATAFLASH_BANKS] = {
 	{CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS0, 0},	/* Logical adress, CS */
-	{CONFIG_SYS_DATAFLASH_LOGIC_ADDR_CS3, 3}
 };
 
 /*define the area offsets*/
