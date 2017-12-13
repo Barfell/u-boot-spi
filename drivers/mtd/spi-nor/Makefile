@@ -10,3 +10,6 @@ endif
 
 ## spi-nor to spi interface driver
 obj-$(CONFIG_MTD_M25P80)	+= m25p80.o
+
+## spi-nor drivers
+obj-$(CONFIG_MTD_ZYNQ_QSPI)	+= zynq_qspinor.o
