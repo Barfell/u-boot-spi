@@ -14,7 +14,6 @@
 
 	aliases {
 		serial0 = &uart1;
-		spi0 = &qspi;
 		mmc0 = &sdhci0;
 	};
 
@@ -40,6 +39,17 @@
 
 &qspi {
 	u-boot,dm-pre-reloc;
+	status = "okay";
+
+	s25fl128s_64k: flash@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		reg = <0>;
+		compatible = "jedec,spi-nor";
+	};
+};
+
+&qspinor {
 	status = "okay";
 };
 
