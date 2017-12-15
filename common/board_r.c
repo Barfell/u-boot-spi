@@ -42,6 +42,7 @@
 #include <scsi.h>
 #include <serial.h>
 #include <spi.h>
+#include <linux/mtd/spi-nor.h>
 #include <stdio_dev.h>
 #include <timer.h>
 #include <trace.h>
@@ -397,6 +398,15 @@ static int initr_spi(void)
 #endif
 	spi_init_r();
 #endif
+	return 0;
+}
+#endif
+
+#ifdef CONFIG_MTD_SPI_NOR
+static int initr_spi_nor(void)
+{
+	puts("SPI-NOR: ");
+	spi_nor_init();
 	return 0;
 }
 #endif
@@ -760,6 +770,9 @@ static init_fnc_t init_sequence_r[] = {
 #endif
 #ifdef CONFIG_PPC
 	initr_spi,
+#endif
+#ifdef CONFIG_MTD_SPI_NOR
+	initr_spi_nor,
 #endif
 #ifdef CONFIG_CMD_NAND
 	initr_nand,

@@ -15,6 +15,23 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
+int spi_nor_init(void)
+{
+	struct udevice *bus;
+
+	for (uclass_first_device(UCLASS_SPI_NOR, &bus);
+	     bus;
+	     uclass_next_device(&bus)) {
+		;
+	}
+
+#ifndef CONFIG_SPL_BUILD
+	print_spi_nor_devices(',');
+#endif
+
+	return 0;
+}
+
 struct spi_nor *spi_nor_get_spi_nor_dev(struct udevice *dev)
 {
 	struct spi_nor_uclass_priv *upriv;

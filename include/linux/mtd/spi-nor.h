@@ -210,5 +210,6 @@ int get_spi_nor_num(void);
 struct spi_nor *spi_nor_get_spi_nor_dev(struct udevice *dev);
 struct mtd *spi_nor_get_mtd(struct spi_nor *nor);
 void print_spi_nor_devices(char separator);
+int spi_nor_init(void);
 
 #endif /* __MTD_SPI_NOR_H */
