@@ -11,6 +11,7 @@ config ENV_IS_NOWHERE
 	depends on !ENV_IS_IN_ONENAND
 	depends on !ENV_IS_IN_REMOTE
 	depends on !ENV_IS_IN_SPI_FLASH
+	depends on !ENV_IS_IN_SPI_NOR
 	depends on !ENV_IS_IN_UBI
 	default y
 	help
@@ -337,6 +338,22 @@ config ENV_IS_IN_SPI_FLASH
 
 	  Define the SPI work mode. If not defined then use SPI_MODE_3.
 
+config ENV_IS_IN_SPI_NOR
+	bool "Environment is in SPI-NOR flash"
+	depends on !CHAIN_OF_TRUST
+	help
+	  Define this if you have a SPI NOR Flash memory device which you
+	  want to use for the environment.
+
+	  - CONFIG_ENV_OFFSET:
+	  - CONFIG_ENV_SIZE:
+
+	  These two #defines specify the offset and size of the
+	  environment area within the SPI NOR Flash. CONFIG_ENV_OFFSET must be
+	  aligned to an erase sector boundary.
+
+	  - CONFIG_ENV_SECT_SIZE:
+
 config ENV_IS_IN_UBI
 	bool "Environment in a UBI volume"
 	depends on !CHAIN_OF_TRUST
@@ -436,6 +453,17 @@ config ENV_EXT4_FILE
 	help
 	  It's a string of the EXT4 file name. This file use to store the
 	  environment (explicit path to the file)
+
+config ENV_SPI_NOR_DEVNUM
+	int "SPI-NOR device number for the environment"
+	depends on ENV_IS_IN_SPI_NOR
+	default 0
+	help
+	  Define this an integer of spi nor device number for the environment.
+	  Since spi nor framework assign device numbers automatically by devicetree
+	  node definition which start from 0, so assign 0 as default.
+
+	  If board need different devnum then, this can be change.
 
 if ARCH_SUNXI
 

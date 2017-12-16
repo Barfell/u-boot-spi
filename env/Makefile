@@ -25,6 +25,7 @@ obj-$(CONFIG_ENV_IS_IN_NVRAM) += nvram.o
 obj-$(CONFIG_ENV_IS_IN_ONENAND) += onenand.o
 obj-$(CONFIG_ENV_IS_IN_SATA) += sata.o
 obj-$(CONFIG_ENV_IS_IN_SPI_FLASH) += sf.o
+obj-$(CONFIG_ENV_IS_IN_SPI_NOR) += spinor.o
 obj-$(CONFIG_ENV_IS_IN_REMOTE) += remote.o
 obj-$(CONFIG_ENV_IS_IN_UBI) += ubi.o
 obj-$(CONFIG_ENV_IS_NOWHERE) += nowhere.o
