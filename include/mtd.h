@@ -29,8 +29,14 @@ enum mtd_if_type {
 
 struct mtd {
 	struct udevice		*dev;		/* mtd device */
+	u_char			type;		/* mtd device type */
+	const char		*name;		/* mtd device name */
 	u32			flags;		/* mtd device flags */
 	uint64_t		size;		/* mtd device size */
+	u32			erasesize;	/* erase size */
+	u32			writesize;	/* write size */
+	u32			writebufsize;	/* write buffer size */
+	void			*priv;
 	enum mtd_if_type	mtd_if_type;	/* type of mtd interface */
 	int			devnum;		/* device number */
 };
