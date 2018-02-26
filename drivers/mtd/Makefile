@@ -5,8 +5,11 @@
 # SPDX-License-Identifier:	GPL-2.0+
 #
 
-ifneq (,$(findstring y,$(CONFIG_MTD_DEVICE)$(CONFIG_CMD_NAND)$(CONFIG_CMD_ONENAND)$(CONFIG_CMD_SF)))
-obj-y += mtdcore.o mtd_uboot.o
+ifneq (,$(findstring y,$(CONFIG_MTD_DEVICE)$(CONFIG_CMD_NAND)$(CONFIG_CMD_ONENAND)$(CONFIG_CMD_SF),$(CONFIG_CMD_SPINOR)))
+obj-y += mtd_uboot.o
+ifndef CONFIG_MTD
+obj-y += mtdcore.o
+endif
 endif
 obj-$(CONFIG_MTD) += mtd-uclass.o
 obj-$(CONFIG_MTD_PARTITIONS) += mtdpart.o
