@@ -196,5 +196,5 @@ int mtd_create_devicef(struct udevice *parent, const char *drv_name,
 UCLASS_DRIVER(mtd) = {
 	.id		= UCLASS_MTD,
 	.name		= "mtd",
-	.per_device_auto_alloc_size = sizeof(struct mtd),
+	.per_device_platdata_auto_alloc_size = sizeof(struct mtd),
 };
