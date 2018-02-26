@@ -70,6 +70,25 @@ int mtd_dwrite(struct mtd *mtd, loff_t to, size_t len, size_t *retlen,
 	return ops->write(dev, to, len, retlen, buf);
 }
 
+int mtd_dprotect(struct mtd *mtd, loff_t ofs, uint64_t len, bool prot)
+{
+	struct udevice *dev = mtd->dev;
+	const struct mtd_ops *ops = mtd_get_ops(dev);
+
+	if (!ops->lock || !ops->unlock)
+		return -ENOSYS;
+
+	if (ofs < 0 || ofs > mtd->size || len > mtd->size - ofs)
+		return -EINVAL;
+	if (!len)
+		return 0;
+
+	if (prot)
+		return ops->lock(dev, ofs, len);
+	else
+		return ops->unlock(dev, ofs, len);
+}
+
 int mtd_find_device(int mtd_if_type, int devnum, struct udevice **devp)
 {
 	struct uclass *uc;

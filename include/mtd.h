@@ -82,6 +82,17 @@ int mtd_dwrite(struct mtd *mtd, loff_t to, size_t len, size_t *retlen,
 	       const u_char *buf);
 
 /**
+ * mtd_dprotect - protect area of MTD device
+ *
+ * @mtd:	MTD device
+ * @ofs:	sector start offset into device in bytes to protect to
+ * @len:	len of bytes to protect
+ * @prot:	protect boolean, true for lock, false for unlock
+ * @return 0 if OK, -ve on error
+ */
+int mtd_dprotect(struct mtd *mtd, loff_t ofs, uint64_t len, bool prot);
+
+/**
  * mtd_derase() - erase blocks of the MTD device
  *
  * @mtd:	MTD device

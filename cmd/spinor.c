@@ -150,6 +150,44 @@ static int do_spinor_write_read(int argc, char * const argv[])
 	return ret == 0 ? CMD_RET_SUCCESS : CMD_RET_FAILURE;
 }
 
+static int do_spinor_protect(int argc, char * const argv[])
+{
+	struct mtd *mtd;
+	struct spi_nor *nor;
+	loff_t sector, len, maxsize;
+	char *endp;
+	int idx = 0;
+	bool prot = false;
+	int ret = CMD_RET_FAILURE;
+
+	if (argc != 4)
+		return CMD_RET_USAGE;
+
+	nor = init_spinor_device(curr_device, false);
+	if (!nor)
+		return CMD_RET_FAILURE;
+
+	sector = simple_strtoul(argv[2], &endp, 16);
+	if (*argv[2] == 0 || *endp != 0)
+		return CMD_RET_FAILURE;
+
+	mtd = spi_nor_get_mtd(nor);
+	if (mtd_arg_off_size(argc - 3, &argv[3], &idx, &sector, &len,
+			     &maxsize, MTD_DEV_TYPE_NOR, mtd->size))
+		return CMD_RET_FAILURE;
+
+	if (strcmp(argv[1], "lock") == 0)
+		prot = true;
+	else if (strcmp(argv[1], "unlock") == 0)
+		prot = false;
+	else
+		return -1;  /* Unknown parameter */
+
+	ret = mtd_dprotect(mtd, sector, len, prot);
+
+	return ret == 0 ? CMD_RET_SUCCESS : CMD_RET_FAILURE;
+}
+
 static int mtd_parse_len_arg(struct mtd *mtd, char *arg, loff_t *len)
 {
 	char *ep;
@@ -252,6 +290,11 @@ static int do_spinor(cmd_tbl_t *cmdtp, int flag, int argc,
 		goto done;
 	}
 
+	if (strcmp(cmd, "protect") == 0) {
+		ret = do_spinor_protect(argc, argv);
+		goto done;
+	}
+
 done:
 	if (ret != -1)
 		return ret;
@@ -266,7 +309,9 @@ static char spinor_help_text[] =
 	"spinor dev [devnum]		- show or set current spinor device\n"
 	"spinor erase offset len         - erase 'len' bytes from 'offset'\n"
 	"spinor write addr to len	- write 'len' bytes to 'to' from 'addr'\n"
-	"spinor read addr from len	- read 'len' bytes from 'from' to 'addr'";
+	"spinor read addr from len	- read 'len' bytes from 'from' to 'addr'\n"
+	"spinor protect lock/unlock sector len - protect/unprotect 'len' bytes starting\n"
+	"				  at address 'sector'";
 
 U_BOOT_CMD(
 	spinor, 5, 1, do_spinor,
