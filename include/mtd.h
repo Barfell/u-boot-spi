@@ -47,6 +47,9 @@ struct mtd_ops {
 		    size_t *retlen, u_char *buf);
 	int (*write)(struct udevice *dev, loff_t to, size_t len,
 		     size_t *retlen, const u_char *buf);
+	int (*lock) (struct udevice *dev, loff_t ofs, uint64_t len);
+	int (*unlock) (struct udevice *dev, loff_t ofs, uint64_t len);
+	int (*is_locked) (struct udevice *dev, loff_t ofs, uint64_t len);
 };
 
 /* Access the serial operations for a device */
