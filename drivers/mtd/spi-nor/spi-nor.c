@@ -303,6 +303,113 @@ int spi_nor_mread(struct udevice *dev, loff_t from, size_t len,
 	return ret;
 }
 
+#ifdef CONFIG_SPI_NOR_SST
+static int sst_byte_write(struct spi_nor *nor, u32 addr, const void *buf,
+			  size_t *retlen)
+{
+	const struct spi_nor_ops *ops = spi_nor_get_ops(nor->dev);
+	int ret;
+
+	ret = write_enable(nor->dev);
+	if (ret)
+		return ret;
+
+	nor->program_opcode = SNOR_OP_BP;
+
+	ret = ops->write(nor->dev, addr, 1, buf);
+	if (ret)
+		return ret;
+
+	*retlen += 1;
+
+	return spi_nor_wait_till_ready(nor->dev, SNOR_READY_WAIT_PROG);
+}
+
+static int sst_mwrite_wp(struct udevice *dev, loff_t to, size_t len,
+			 size_t *retlen, const u_char *buf)
+{
+	struct mtd *mtd = mtd_get_info(dev);
+	int devnum = mtd->devnum;
+	const struct spi_nor_ops *ops;
+	struct spi_nor *nor;
+	size_t actual;
+	int ret;
+
+	nor = find_spi_nor_device(devnum);
+	if (!nor)
+		return -ENODEV;
+	ops = spi_nor_get_ops(nor->dev);
+
+	/* If the data is not word aligned, write out leading single byte */
+	actual = to % 2;
+	if (actual) {
+		ret = sst_byte_write(nor, to, buf, retlen);
+		if (ret)
+			goto done;
+	}
+	to += actual;
+
+	ret = write_enable(nor->dev);
+	if (ret)
+		goto done;
+
+	for (; actual < len - 1; actual += 2) {
+		nor->program_opcode = SNOR_OP_AAI_WP;
+
+		ret = ops->write(nor->dev, to, 2, buf + actual);
+		if (ret) {
+			debug("spi-nor: sst word program failed\n");
+			break;
+		}
+
+		ret = spi_nor_wait_till_ready(nor->dev, SNOR_READY_WAIT_PROG);
+		if (ret)
+			break;
+
+		to += 2;
+		*retlen += 2;
+	}
+
+	if (!ret)
+		ret = write_disable(nor->dev);
+
+	/* If there is a single trailing byte, write it out */
+	if (!ret && actual != len)
+		ret = sst_byte_write(nor, to, buf + actual, retlen);
+
+ done:
+	return ret;
+}
+
+static int sst_mwrite_bp(struct udevice *dev, loff_t to, size_t len,
+			 size_t *retlen, const u_char *buf)
+{
+	struct mtd *mtd = mtd_get_info(dev);
+	int devnum = mtd->devnum;
+	struct spi_nor *nor;
+	size_t actual;
+	int ret;
+
+	nor = find_spi_nor_device(devnum);
+	if (!nor)
+		return -ENODEV;
+
+	for (actual = 0; actual < len; actual++) {
+		ret = sst_byte_write(nor, to, buf + actual, retlen);
+		if (ret) {
+			debug("spi-nor: sst byte program failed\n");
+			break;
+		}
+		to++;
+	}
+
+	if (!ret)
+		ret = write_disable(nor->dev);
+
+	return ret;
+}
+#endif
+
 #ifdef CONFIG_SPI_NOR_MACRONIX
 static int macronix_quad_enable(struct udevice *dev)
 {
@@ -469,6 +576,14 @@ int spi_nor_scan(struct spi_nor *nor)
 		nor->flags |= SNOR_F_SST_WRITE;
 
 	ops->write = spi_nor_mwrite;
+#if defined(CONFIG_SPI_NOR_SST)
+	if (nor->flags & SNOR_F_SST_WRITE) {
+		if (nor->mode & SNOR_WRITE_1_1_BYTE)
+			ops->write = sst_mwrite_bp;
+		else
+			ops->write = sst_mwrite_wp;
+	}
+#endif
 
 	/* compute the flash size */
 	nor->page_size = info->page_size;
